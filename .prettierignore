@@ -1,0 +1,6 @@
+# Ignore artifacts:
+.aws-sam
+*.md
+*.yaml
+*.yml
+*.toml
