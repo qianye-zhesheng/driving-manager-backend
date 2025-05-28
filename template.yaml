@@ -4,6 +4,13 @@ Description: >-
 Transform:
 - AWS::Serverless-2016-10-31
 
+Parameters:
+  # The name of the Cognito User Pool to use for authentication
+  CognitoUserPoolArn:
+    Type: String
+    Description: The ARN of the Cognito User Pool to use for authentication
+    Default: '{{resolve:ssm:CognitoUserPoolArn:1}}'
+
 # # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -22,6 +29,11 @@ Globals:
         SAMPLE_TABLE: !Ref SampleTable
   Api:
     TracingEnabled: true
+    Auth:
+      DefaultAuthorizer: MyCognitoAuthorizer
+      Authorizers:
+        MyCognitoAuthorizer:
+          UserPoolArn: !Ref CognitoUserPoolArn
 
 
 # Resources declares the AWS resources that you want to include in the stack
