@@ -129,6 +129,26 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
+  
+  CheckAnswersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-CheckAnswers"
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+        - AttributeName: date_time
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+        - AttributeName: date_time
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      OnDemandThroughput:
+        MaxReadRequestUnits: 5
+        MaxWriteRequestUnits: 5
+
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
