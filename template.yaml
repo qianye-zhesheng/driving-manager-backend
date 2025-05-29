@@ -27,6 +27,7 @@ Globals:
       Variables:
         # Make table name accessible as environment variable from function code during execution
         SAMPLE_TABLE: !Ref SampleTable
+        CHECK_ANSWERS_TABLE: !Ref CheckAnswersTable
   Api:
     TracingEnabled: true
     Auth:
@@ -41,6 +42,38 @@ Globals:
 Resources:
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+
+  checkPostAnswerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/check/post-answer.postAnswerHandler
+      Description: save the answer
+      Policies:
+      - DynamoDBWritePolicy:
+          TableName: !Ref CheckAnswersTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /check/post-answer
+            Method: POST
+    Metadata:   
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: esm
+        Minify: false
+        OutExtension:
+          - .js=.mjs
+        Target: "es2020"
+        Sourcemap: false
+        Banner:
+          - js=import path from 'path';
+            import { fileURLToPath } from 'url';
+            import { createRequire as topLevelCreateRequire } from 'module';
+            const require = topLevelCreateRequire(import.meta.url);
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+
 
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllItemsFunction:
