@@ -1,11 +1,13 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import { ImSafeAnswer, WeatherAnswer } from '../../domains/check/interfaces'
+import { ImSafeAnswer, WeatherAnswer } from '../../logic/check/interfaces'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import type { APIGatewayProxyEvent } from 'aws-lambda'
 import type { APIGatewayProxyResult } from 'aws-lambda'
+import { PostAnswerValidator } from '../../validator/check/post-answer-validator'
+import { AnswerParam } from '../../validator/check/answer-param'
 
 const client = new DynamoDBClient({})
 const ddbDocClient = DynamoDBDocumentClient.from(client)
@@ -27,29 +29,33 @@ export const postAnswerHandler = async (
     throw new Error(`postMethod only accepts POST method, you tried: ${event.httpMethod} method.`)
   }
 
-  if (event.body == null) {
-    throw new Error('body is null')
-  }
   // All log statements are written to CloudWatch
   console.info('received:', event)
 
-  const body = JSON.parse(event.body)
+  const validationResult = PostAnswerValidator.of(event.body).validate()
 
-  const userId: string = body.userId
-  const imSafeAnswer: ImSafeAnswer = body.imSafeAnswer
-  const weatherAnswer: WeatherAnswer = body.weatherAnswer
-  const judgement: string = body.judgement
+  if (validationResult.isInvalid()) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: validationResult.getErrorMessage(),
+      }),
+    }
+  }
+
+  const answerParam: AnswerParam = AnswerParam.safeParse(event.body)
+  //TODO たぶん、safeParseしたあと、中身を取り出す処理が必要
 
   const dateTime: string = dayjs().tz(TIMEZONE).format()
 
   const params = {
     TableName: TABLE_NAME,
     Item: {
-      user_id: userId,
+      user_id: answerParam.userId,
       date_time: dateTime,
-      im_safe_answer: imSafeAnswer,
-      weather_answer: weatherAnswer,
-      judgement: judgement,
+      im_safe_answer: answerParam.imSafeAnswer,
+      weather_answer: answerParam.imSafeAnswer,
+      judgement: answerParam.judgement,
     },
   }
 
