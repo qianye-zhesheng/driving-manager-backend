@@ -2,18 +2,18 @@ import { AnswerParam } from './answer-param'
 import { ParamDetailValidator } from './param-detail-validator'
 
 export class ParamParser {
-  private constructor(private readonly paramStr: string) {
-    if (ParamDetailValidator.validate(paramStr).isInvalid()) {
+  private constructor(private readonly rawBody: string) {
+    if (ParamDetailValidator.validate(rawBody).isInvalid()) {
       throw new Error('param is invalid')
     }
-    this.paramStr = paramStr
+    this.rawBody = rawBody
   }
 
-  public static from(paramStr: string): ParamParser {
-    return new ParamParser(paramStr)
+  public static from(rawBody: string): ParamParser {
+    return new ParamParser(rawBody)
   }
 
   public parse(): AnswerParam {
-    return AnswerParam.safeParse(this.paramStr).data as AnswerParam
+    return AnswerParam.safeParse(JSON.parse(this.rawBody)).data as AnswerParam
   }
 }

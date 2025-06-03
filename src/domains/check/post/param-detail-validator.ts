@@ -3,8 +3,9 @@ import { AnswerParam } from './answer-param'
 import { z } from 'zod/v4'
 
 export class ParamDetailValidator {
-  public static validate(body: string): ValidationResult {
-    const result = AnswerParam.safeParse(body)
+  public static validate(rawBody: string): ValidationResult {
+    const parsedBody = JSON.parse(rawBody)
+    const result = AnswerParam.safeParse(parsedBody)
     if (result.success) {
       return ValidationResult.valid()
     }
