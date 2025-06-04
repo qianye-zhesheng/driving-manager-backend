@@ -8,6 +8,7 @@ import type { APIGatewayProxyResult } from 'aws-lambda'
 import { ParamValidator } from '../../domains/check/post/param-validator'
 import { ParamParser } from '../../domains/check/post/param-parser'
 import { AnswerParam } from '../../domains/check/post/answer-param'
+import { Response } from '../../domains/check/post/response'
 
 const client = new DynamoDBClient({})
 const ddbDocClient = DynamoDBDocumentClient.from(client)
@@ -25,22 +26,13 @@ const TIMEZONE: string = 'Asia/Tokyo'
 export const postAnswerHandler = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-  if (event.httpMethod !== 'POST') {
-    throw new Error(`postMethod only accepts POST method, you tried: ${event.httpMethod} method.`)
-  }
-
   // All log statements are written to CloudWatch
   console.info('received:', event)
 
   const validationResult = ParamValidator.of(event.body).validate()
 
   if (validationResult.isInvalid()) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({
-        message: validationResult.getErrorMessage(),
-      }),
-    }
+    return Response.of400(validationResult.getErrorMessage()).toApiResult()
   }
 
   const answerParam: AnswerParam = ParamParser.from(event.body as string).parse()
@@ -65,10 +57,7 @@ export const postAnswerHandler = async (
     console.log('Error', err.stack)
   }
 
-  const response: APIGatewayProxyResult = {
-    statusCode: 200,
-    body: JSON.stringify(answerParam),
-  }
+  const response: APIGatewayProxyResult = Response.of200(answerParam, dateTime).toApiResult()
 
   // All log statements are written to CloudWatch
   console.info(
