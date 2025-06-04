@@ -52,4 +52,10 @@ describe('Responseのテスト', () => {
       body: JSON.stringify({ message: message }),
     })
   })
+
+  it('should return the correct status code and body', () => {
+    const response = Response.of500('Error occurred')
+    expect(response.getStatusCode()).toBe(500)
+    expect(response.getBody()).toBe(JSON.stringify({ message: 'Error occurred' }))
+  })
 })

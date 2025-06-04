@@ -32,4 +32,12 @@ export class Response {
       body: this.body,
     }
   }
+
+  public getStatusCode(): number {
+    return this.statusCode
+  }
+
+  public getBody(): string {
+    return this.body
+  }
 }
