@@ -1,5 +1,3 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
@@ -9,11 +7,11 @@ import { ParamValidator } from '../../domains/check/post/param-validator'
 import { ParamParser } from '../../domains/check/post/param-parser'
 import { AnswerParam } from '../../domains/check/post/answer-param'
 import { Response } from '../../domains/check/post/response'
-
-const client = new DynamoDBClient({})
-const ddbDocClient = DynamoDBDocumentClient.from(client)
+import { AnswerRepository } from '../../domains/check/post/answer-repository'
 
 const TABLE_NAME: string = process.env.CHECK_ANSWERS_TABLE as string
+
+const repository: AnswerRepository = new AnswerRepository(TABLE_NAME)
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -36,32 +34,13 @@ export const postAnswerHandler = async (
   }
 
   const answerParam: AnswerParam = ParamParser.from(event.body as string).parse()
-
   const dateTime: string = dayjs().tz(TIMEZONE).format()
 
-  const params = {
-    TableName: TABLE_NAME,
-    Item: {
-      user_id: answerParam.userId,
-      date_time: dateTime,
-      im_safe_answer: answerParam.imSafeAnswer,
-      weather_answer: answerParam.imSafeAnswer,
-      judgement: answerParam.judgement,
-    },
-  }
-
-  try {
-    const data = await ddbDocClient.send(new PutCommand(params))
-    console.log('Success - item added or updated', data)
-  } catch (err) {
-    console.log('Error', err.stack)
-  }
-
-  const response: APIGatewayProxyResult = Response.of200(answerParam, dateTime).toApiResult()
+  const response: Response = await repository.saveAnswer(answerParam, dateTime)
 
   // All log statements are written to CloudWatch
   console.info(
-    `response from: ${event.path} statusCode: ${response.statusCode} body: ${response.body}`,
+    `response from: ${event.path} statusCode: ${response.getStatusCode()} body: ${response.getBody()}`,
   )
-  return response
+  return response.toApiResult()
 }
