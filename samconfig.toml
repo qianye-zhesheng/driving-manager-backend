@@ -31,3 +31,35 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+
+
+[production.global.parameters]
+stack_name = "driving-manager"
+
+[production.build.parameters]
+cached = true
+parallel = true
+
+[production.validate.parameters]
+lint = true
+
+[production.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "driving-manager"
+region = "ap-northeast-3"
+image_repositories = []
+
+[production.package.parameters]
+resolve_s3 = true
+
+[production.sync.parameters]
+watch = true
+
+[production.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[production.local_start_lambda.parameters]
+warm_containers = "EAGER"
