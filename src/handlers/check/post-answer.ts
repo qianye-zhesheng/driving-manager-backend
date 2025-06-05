@@ -1,11 +1,13 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import { ImSafeAnswer, WeatherAnswer } from '../../domains/check/interfaces'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import type { APIGatewayProxyEvent } from 'aws-lambda'
 import type { APIGatewayProxyResult } from 'aws-lambda'
+import { ParamValidator } from '../../domains/check/post/param-validator'
+import { ParamParser } from '../../domains/check/post/param-parser'
+import { AnswerParam } from '../../domains/check/post/answer-param'
 
 const client = new DynamoDBClient({})
 const ddbDocClient = DynamoDBDocumentClient.from(client)
@@ -27,29 +29,32 @@ export const postAnswerHandler = async (
     throw new Error(`postMethod only accepts POST method, you tried: ${event.httpMethod} method.`)
   }
 
-  if (event.body == null) {
-    throw new Error('body is null')
-  }
   // All log statements are written to CloudWatch
   console.info('received:', event)
 
-  const body = JSON.parse(event.body)
+  const validationResult = ParamValidator.of(event.body).validate()
 
-  const userId: string = body.userId
-  const imSafeAnswer: ImSafeAnswer = body.imSafeAnswer
-  const weatherAnswer: WeatherAnswer = body.weatherAnswer
-  const judgement: string = body.judgement
+  if (validationResult.isInvalid()) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: validationResult.getErrorMessage(),
+      }),
+    }
+  }
+
+  const answerParam: AnswerParam = ParamParser.from(event.body as string).parse()
 
   const dateTime: string = dayjs().tz(TIMEZONE).format()
 
   const params = {
     TableName: TABLE_NAME,
     Item: {
-      user_id: userId,
+      user_id: answerParam.userId,
       date_time: dateTime,
-      im_safe_answer: imSafeAnswer,
-      weather_answer: weatherAnswer,
-      judgement: judgement,
+      im_safe_answer: answerParam.imSafeAnswer,
+      weather_answer: answerParam.imSafeAnswer,
+      judgement: answerParam.judgement,
     },
   }
 
@@ -62,7 +67,7 @@ export const postAnswerHandler = async (
 
   const response: APIGatewayProxyResult = {
     statusCode: 200,
-    body: JSON.stringify(body),
+    body: JSON.stringify(answerParam),
   }
 
   // All log statements are written to CloudWatch
