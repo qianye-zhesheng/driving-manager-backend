@@ -10,18 +10,18 @@ import { AnswerParam } from '../../../../src/domains/check/post/answer-param'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 
 describe('postAnswerHandlerのテスト', () => {
-  const anserParam: AnswerParam = JSON.parse(event.body) as AnswerParam
+  const answerParam: AnswerParam = JSON.parse(event.body) as AnswerParam
   const datetime: string = '2025-01-01T00:00:00+09:00'
 
   beforeEach(() => {
     jest.clearAllMocks()
 
     jest.spyOn(ParamParser.prototype, 'parse').mockImplementation(() => {
-      return anserParam
+      return answerParam
     })
 
     jest.spyOn(AnswerRepository.prototype, 'saveAnswer').mockImplementation(() => {
-      return Promise.resolve(Response.of200(anserParam, datetime))
+      return Promise.resolve(Response.of200(answerParam, datetime))
     })
   })
 
@@ -35,11 +35,11 @@ describe('postAnswerHandlerのテスト', () => {
     expect(result.statusCode).toBe(200)
     expect(result.body).toBe(
       JSON.stringify({
-        userId: anserParam.userId,
+        userId: answerParam.userId,
         dateTime: datetime,
-        imSafeAnswer: anserParam.imSafeAnswer,
-        weatherAnswer: anserParam.weatherAnswer,
-        judgement: anserParam.judgement,
+        imSafeAnswer: answerParam.imSafeAnswer,
+        weatherAnswer: answerParam.weatherAnswer,
+        judgement: answerParam.judgement,
       }),
     )
 
