@@ -10,6 +10,19 @@ Parameters:
     Type: String
     Description: The ARN of the Cognito User Pool to use for authentication
     Default: '{{resolve:ssm:CognitoUserPoolArn:1}}'
+  CorsAllowOrigin:
+    Type: String
+    Description: The origin to allow for CORS requests
+    Default: "'{{resolve:ssm:DrivingManagerFrontendUrl:1}}'"
+  CorsAllowHeaders:
+    Type: String
+    Description: The headers to allow for CORS requests
+    Default: "'Content-Type,Authorization'"
+  CorsAllowMethods:
+    Type: String
+    Description: The methods to allow for CORS requests
+    Default: "'GET,POST,PUT,DELETE,OPTIONS'"
+
 
 # # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -28,14 +41,21 @@ Globals:
         # Make table name accessible as environment variable from function code during execution
         SAMPLE_TABLE: !Ref SampleTable
         CHECK_ANSWERS_TABLE: !Ref CheckAnswersTable
+        ALLOW_ORIGIN: !Ref CorsAllowOrigin
+        ALLOW_HEADERS: !Ref CorsAllowHeaders
+        ALLOW_METHODS: !Ref CorsAllowMethods
   Api:
     TracingEnabled: true
     Auth:
       DefaultAuthorizer: MyCognitoAuthorizer
+      AddDefaultAuthorizerToCorsPreflight: false
       Authorizers:
         MyCognitoAuthorizer:
           UserPoolArn: !Ref CognitoUserPoolArn
-
+    Cors:
+      AllowOrigin: !Ref CorsAllowOrigin
+      AllowHeaders: !Ref CorsAllowHeaders
+      AllowMethods: !Ref CorsAllowMethods
 
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html

@@ -4,6 +4,7 @@ version = 0.1
 
 [default.global.parameters]
 stack_name = "driving-manager-dev"
+parameter_overrides = "CorsAllowOrigin=\"'http://localhost:5173'\" CognitoUserPoolArn=\"{{resolve:ssm:CognitoUserPoolDevArn:1}}\""
 
 [default.build.parameters]
 cached = true

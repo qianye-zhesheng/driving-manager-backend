@@ -1,5 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda'
 import { AnswerParam } from './answer-param'
+import { CorsHeaders } from '../../../config/cors-headers'
 
 export class Response {
   private constructor(
@@ -30,6 +31,7 @@ export class Response {
     return {
       statusCode: this.statusCode,
       body: this.body,
+      headers: CorsHeaders.get(),
     }
   }
 
