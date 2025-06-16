@@ -182,6 +182,26 @@ Resources:
         MaxReadRequestUnits: 5
         MaxWriteRequestUnits: 5
 
+  DrivingSessionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-DrivingSessions"
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+        - AttributeName: date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      OnDemandThroughput:
+        MaxReadRequestUnits: 5
+        MaxWriteRequestUnits: 5
+
+
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
