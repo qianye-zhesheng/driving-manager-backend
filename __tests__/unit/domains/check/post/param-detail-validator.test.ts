@@ -1,10 +1,10 @@
 import { ParamDetailValidator } from '../../../../../src/domains/check/post/param-detail-validator'
-import eventPutAnswer from '../../../../../events/check/event-put-answer.json'
+import eventPostAnswer from '../../../../../events/check/event-post-answer.json'
 import invalidParams from './invalid-params.json'
 
 describe('ParamDetailValidatorのテスト', () => {
   test('validなparamならvalidの結果を返すこと', () => {
-    const result = ParamDetailValidator.validate(eventPutAnswer.body)
+    const result = ParamDetailValidator.validate(eventPostAnswer.body)
     expect(result.isValid()).toBe(true)
   })
 
