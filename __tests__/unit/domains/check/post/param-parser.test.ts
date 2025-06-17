@@ -1,12 +1,12 @@
 import { ParamParser } from '../../../../../src/domains/check/post/param-parser'
-import eventPutAnswer from '../../../../../events/check/event-put-answer.json'
+import eventPostAnswer from '../../../../../events/check/event-post-answer.json'
 import invalidParams from './invalid-params.json'
 import { AnswerParam } from '../../../../../src/domains/check/post/answer-param'
 
 describe('ParamParserのテスト', () => {
   test('validなparamなら例外を投げないこと', () => {
     expect(() => {
-      ParamParser.from(eventPutAnswer.body).parse()
+      ParamParser.from(eventPostAnswer.body).parse()
     }).not.toThrow(Error)
   })
 
@@ -20,7 +20,7 @@ describe('ParamParserのテスト', () => {
   })
 
   test('parseされた内容がAnswerParamの型であること', () => {
-    const answerParam: AnswerParam = ParamParser.from(eventPutAnswer.body).parse()
+    const answerParam: AnswerParam = ParamParser.from(eventPostAnswer.body).parse()
     expect(answerParam).toHaveProperty('userId', 'user123')
     expect(answerParam).toHaveProperty('imSafeAnswer')
     expect(answerParam).toHaveProperty('imSafeAnswer.illness', 1)
