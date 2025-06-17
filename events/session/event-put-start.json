@@ -1,0 +1,4 @@
+{
+  "httpMethod": "PUT",
+  "body": "{\"userId\":\"user123\",\"date\":\"2025-01-01\",\"odometer\":10000}"
+}
