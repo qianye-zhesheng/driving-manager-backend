@@ -2,7 +2,7 @@ import { z } from 'zod/v4'
 
 export const SessionParam = z.object({
   userId: z.string(),
-  date: z.iso.date(),
+  date: z.int(),
   odometer: z.int().positive(),
 })
 

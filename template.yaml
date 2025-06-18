@@ -41,7 +41,7 @@ Globals:
         # Make table name accessible as environment variable from function code during execution
         SAMPLE_TABLE: !Ref SampleTable
         CHECK_ANSWERS_TABLE: !Ref CheckAnswersTable
-        DRIVING_SESSIONS_TABLE: !REF DrivingSessionsTable
+        DRIVING_SESSIONS_TABLE: !Ref DrivingSessionsTable
         ALLOW_ORIGIN: !Ref CorsAllowOrigin
         ALLOW_HEADERS: !Ref CorsAllowHeaders
         ALLOW_METHODS: !Ref CorsAllowMethods
@@ -101,7 +101,7 @@ Resources:
       Handler: src/handlers/session/put-start.putStartHandler
       Description: save the start record of a driving session
       Policies:
-      - DynamoDBWritePolicy:
+      - DynamoDBCrudPolicy:
           TableName: !Ref DrivingSessionsTable
       Events:
         Api:
@@ -117,7 +117,7 @@ Resources:
         OutExtension:
           - .js=.mjs
         Target: "es2020"
-        Sourcemap: false
+        Sourcemap: true
         Banner:
           - js=import path from 'path';
             import { fileURLToPath } from 'url';
@@ -221,12 +221,12 @@ Resources:
       AttributeDefinitions:
         - AttributeName: user_id
           AttributeType: S
-        - AttributeName: date
-          AttributeType: S
+        - AttributeName: operation_date
+          AttributeType: N
       KeySchema:
         - AttributeName: user_id
           KeyType: HASH
-        - AttributeName: date
+        - AttributeName: operation_date
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
       OnDemandThroughput:
