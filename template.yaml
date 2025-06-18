@@ -41,6 +41,7 @@ Globals:
         # Make table name accessible as environment variable from function code during execution
         SAMPLE_TABLE: !Ref SampleTable
         CHECK_ANSWERS_TABLE: !Ref CheckAnswersTable
+        DRIVING_SESSIONS_TABLE: !REF DrivingSessionsTable
         ALLOW_ORIGIN: !Ref CorsAllowOrigin
         ALLOW_HEADERS: !Ref CorsAllowHeaders
         ALLOW_METHODS: !Ref CorsAllowMethods
@@ -77,6 +78,37 @@ Resources:
           Properties:
             Path: /check/post-answer
             Method: POST
+    Metadata:   
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: esm
+        Minify: false
+        OutExtension:
+          - .js=.mjs
+        Target: "es2020"
+        Sourcemap: false
+        Banner:
+          - js=import path from 'path';
+            import { fileURLToPath } from 'url';
+            import { createRequire as topLevelCreateRequire } from 'module';
+            const require = topLevelCreateRequire(import.meta.url);
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+
+  sessionPutStartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/session/put-start.putStartHandler
+      Description: save the start record of a driving session
+      Policies:
+      - DynamoDBWritePolicy:
+          TableName: !Ref DrivingSessionsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /session/put-start
+            Method: PUT
     Metadata:   
       BuildMethod: esbuild
       BuildProperties:
