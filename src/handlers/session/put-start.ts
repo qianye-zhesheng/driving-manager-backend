@@ -29,7 +29,7 @@ export const putStartHandler = async (
   const sessionParam: SessionParam = ParamParser.from(event.body as string).parse()
   const drivingSession: DrivingSession = {
     userId: sessionParam.userId,
-    date: sessionParam.date,
+    operationDate: sessionParam.date,
     finished: false,
     startOdometer: sessionParam.odometer,
   }
