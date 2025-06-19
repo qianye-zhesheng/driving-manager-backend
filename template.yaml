@@ -221,12 +221,12 @@ Resources:
       AttributeDefinitions:
         - AttributeName: user_id
           AttributeType: S
-        - AttributeName: operation_date
+        - AttributeName: date_number
           AttributeType: N
       KeySchema:
         - AttributeName: user_id
           KeyType: HASH
-        - AttributeName: operation_date
+        - AttributeName: date_number
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
       OnDemandThroughput:
