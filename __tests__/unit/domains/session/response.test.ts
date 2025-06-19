@@ -16,7 +16,7 @@ describe('Responseのテスト', () => {
   it('should create a 200 response with driving session', () => {
     const drivingSession: DrivingSession = {
       userId: 'user123',
-      dateKey: 20250101,
+      dateNumber: 20250101,
       operationDate: '2025-01-01',
       finished: false,
       startOdometer: 10000,

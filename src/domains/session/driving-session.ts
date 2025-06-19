@@ -1,6 +1,6 @@
 export interface DrivingSession {
   userId: string
-  dateKey: number
+  dateNumber: number
   operationDate: string
   finished: boolean
   startOdometer: number
