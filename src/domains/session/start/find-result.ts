@@ -22,7 +22,7 @@ export class FindResult {
     return this.present
   }
 
-  public notExist(): boolean {
+  public doesNotExist(): boolean {
     return !this.present
   }
 
