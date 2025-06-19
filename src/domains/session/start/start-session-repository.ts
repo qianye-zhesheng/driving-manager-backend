@@ -1,12 +1,12 @@
-import { DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb'
-import { DrivingSession } from '../driving-session'
 import {
-  AttributeValue,
-  DynamoDBClient,
-  GetItemCommand,
-  TransactWriteItemsCommand,
-  UpdateItemCommand,
-} from '@aws-sdk/client-dynamodb'
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+  GetCommand,
+  UpdateCommand,
+} from '@aws-sdk/lib-dynamodb'
+import { DrivingSession } from '../driving-session'
+import { AttributeValue, DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { FindResult } from './find-result'
 
 export class StartSessionRepository {
@@ -67,11 +67,11 @@ export class StartSessionRepository {
     dateNumber: number,
   ): Promise<FindResult> {
     const sameDateSession = await this.ddbDocClient.send(
-      new GetItemCommand({
+      new GetCommand({
         TableName: this.tableName,
         Key: {
-          user_id: { S: userId },
-          date_number: { N: String(dateNumber) },
+          user_id: userId,
+          date_number: dateNumber,
         },
       }),
     )
@@ -104,17 +104,17 @@ export class StartSessionRepository {
     existingDrivingSession: DrivingSession,
   ): Promise<void> {
     await this.ddbDocClient.send(
-      new UpdateItemCommand({
+      new UpdateCommand({
         TableName: this.tableName,
         Key: {
-          user_id: { S: existingDrivingSession.userId },
-          date_number: { N: String(existingDrivingSession.dateNumber) },
+          user_id: existingDrivingSession.userId,
+          date_number: existingDrivingSession.dateNumber,
         },
         UpdateExpression: 'set start_odometer = :startOdometer',
         ConditionExpression: 'start_odometer = :originalStartOdometer',
         ExpressionAttributeValues: {
-          ':startOdometer': { N: String(drivingSession.startOdometer) },
-          ':originalStartOdometer': { N: String(existingDrivingSession.startOdometer) },
+          ':startOdometer': drivingSession.startOdometer,
+          ':originalStartOdometer': existingDrivingSession.startOdometer,
         },
       }),
     )
