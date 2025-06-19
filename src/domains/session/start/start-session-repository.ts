@@ -23,18 +23,27 @@ export class StartSessionRepository {
     const unfinishedSessions = await this.ddbDocClient.send(
       new QueryCommand({
         TableName: this.tableName,
-        KeyConditionExpression: 'user_id = :userId AND date_number <> :dateNumber',
+        KeyConditionExpression: 'user_id = :userId',
         FilterExpression: 'finished = :finished',
         ExpressionAttributeValues: {
           ':userId': userId,
-          ':dateNumber': dateNumber,
           ':finished': false,
         },
+        ConsistentRead: true,
       }),
     )
-    if (unfinishedSessions.Count > 0) {
+    if (unfinishedSessions.Count == 0) {
+      return false
+    }
+
+    const countExcludingSameDate = unfinishedSessions.Items.filter(
+      (item) => item.date_number != dateNumber,
+    ).length
+
+    if (countExcludingSameDate > 0) {
       return true
     }
+
     return false
   }
 
@@ -52,6 +61,7 @@ export class StartSessionRepository {
         },
         ScanIndexForward: false,
         Limit: 1,
+        ConsistentRead: true,
       }),
     )
 
@@ -73,6 +83,7 @@ export class StartSessionRepository {
           user_id: userId,
           date_number: dateNumber,
         },
+        ConsistentRead: true,
       }),
     )
 
@@ -120,14 +131,14 @@ export class StartSessionRepository {
     )
   }
 
-  private toEntity(item: Record<string, AttributeValue>): DrivingSession {
+  private toEntity(item: Record<string, any>): DrivingSession {
     return {
-      userId: item.user_id.S,
-      dateNumber: Number(item.date_number.N),
-      operationDate: item.operation_date.S,
-      finished: item.finished.BOOL,
-      startOdometer: Number(item.start_odometer.N),
-      endOdometer: item.end_odometer == undefined ? undefined : Number(item.end_odometer.N),
+      userId: item.user_id,
+      dateNumber: item.date_number,
+      operationDate: item.operation_date,
+      finished: item.finished,
+      startOdometer: item.start_odometer,
+      endOdometer: item.end_odometer,
     } as DrivingSession
   }
 }
