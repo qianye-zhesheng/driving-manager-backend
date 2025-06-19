@@ -4,15 +4,17 @@ import { ParamValidator } from '../../domains/session/param-validator'
 import { ParamParser } from '../../domains/session/param-parser'
 import { DrivingSession } from '../../domains/session/driving-session'
 import { Response } from '../../domains/session/response'
-import { DrivingSessionRepository } from '../../domains/session/driving-session-repository'
 import { SessionParam } from '../../domains/session/session-param'
+import { DateNumber } from '../../domains/session/date-number'
+import { StartSessionSaver } from '../../domains/session/start/start-sessio-saver'
+import { StartSessionRepository } from '../../domains/session/start/start-session-repository'
 
 const TABLE_NAME: string = process.env.DRIVING_SESSIONS_TABLE as string
 
-const repository: DrivingSessionRepository = new DrivingSessionRepository(TABLE_NAME)
+const repository: StartSessionRepository = new StartSessionRepository(TABLE_NAME)
 
 /**
- * 運行前チェック結果を受け取って保存する
+ * 運行開始メーター値を受け取って保存する
  */
 export const putStartHandler = async (
   event: APIGatewayProxyEvent,
@@ -27,16 +29,17 @@ export const putStartHandler = async (
   }
 
   const sessionParam: SessionParam = ParamParser.from(event.body as string).parse()
+
   const drivingSession: DrivingSession = {
     userId: sessionParam.userId,
+    dateNumber: DateNumber.of(sessionParam.date).get(),
     operationDate: sessionParam.date,
     finished: false,
     startOdometer: sessionParam.odometer,
   }
 
-  const response: Response = await repository.save(drivingSession)
+  const response: Response = await new StartSessionSaver(repository, drivingSession).save()
 
-  // All log statements are written to CloudWatch
   console.info(
     `response from: ${event.path} statusCode: ${response.getStatusCode()} body: ${response.getBody()}`,
   )
