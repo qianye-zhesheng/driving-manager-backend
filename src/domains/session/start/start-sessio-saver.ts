@@ -1,7 +1,9 @@
 import { DrivingSession } from '../driving-session'
 import { Response } from '../response'
+import { ValidationResult } from '../validation-result'
 import { FindResult } from './find-result'
 import { StartSessionRepository } from './start-session-repository'
+import { StartSessionValidator } from './start-session-validator'
 
 export class StartSessionSaver {
   public constructor(
@@ -13,24 +15,22 @@ export class StartSessionSaver {
     const userId: string = this.drivingSession.userId
     const dateNumber: number = this.drivingSession.dateNumber
 
+    let validationResult: ValidationResult
+
     try {
-      if (await this.repository.existUnfinishedSessions(userId, dateNumber)) {
-        return Response.of409('終了していない運行記録を先に終了させてください')
-      }
+      validationResult = await new StartSessionValidator(
+        this.repository,
+        this.drivingSession,
+      ).validate()
+    } catch (error) {
+      return this.reportError('validating start session', error)
+    }
 
-      const previousSession: FindResult = await this.repository.findPreviousSessionIfExists(
-        userId,
-        dateNumber,
-      )
+    if (validationResult.isInvalid) {
+      return Response.of409(validationResult.getErrorMessage())
+    }
 
-      if (previousSession.exists()) {
-        if (this.drivingSession.startOdometer < previousSession.get().endOdometer) {
-          return Response.of409(
-            '開始メーター値は、前回の終了メーター値よりも大きい値を指定してください',
-          )
-        }
-      }
-
+    try {
       const sameDateSession: FindResult = await this.repository.findSameDateSessionIfExists(
         userId,
         dateNumber,
@@ -44,8 +44,12 @@ export class StartSessionSaver {
       await this.repository.create(this.drivingSession)
       return Response.of200(this.drivingSession)
     } catch (error) {
-      console.log('Error when saving start driging session:', error.stack)
-      return Response.of500(error.message)
+      return this.reportError('saving driving session', error)
     }
+  }
+
+  private reportError(location: string, error: Error): Response {
+    console.log(`Error when ${location}:`, error.stack)
+    return Response.of500(error.message)
   }
 }
