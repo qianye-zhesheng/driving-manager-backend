@@ -4,7 +4,7 @@ import { ValidationResult } from '../validation-result'
 import { FindResult } from './find-result'
 import { StartSessionRepository } from './start-session-repository'
 import { StartSessionUpdateValidator } from './start-session-update-validator'
-import { StartSessionValidator } from './start-session-validator'
+import { StartSessionCommonValidator } from './start-session-common-validator'
 
 export class StartSessionSaver {
   public constructor(
@@ -19,7 +19,7 @@ export class StartSessionSaver {
     let validationResult: ValidationResult
 
     try {
-      validationResult = await new StartSessionValidator(
+      validationResult = await new StartSessionCommonValidator(
         this.repository,
         this.drivingSession,
       ).validate()
