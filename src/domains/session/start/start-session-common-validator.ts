@@ -3,7 +3,7 @@ import { ValidationResult } from '../validation-result'
 import { FindResult } from './find-result'
 import { StartSessionRepository } from './start-session-repository'
 
-export class StartSessionValidator {
+export class StartSessionCommonValidator {
   public constructor(
     private readonly repository: StartSessionRepository,
     private readonly drivingSession: DrivingSession,
