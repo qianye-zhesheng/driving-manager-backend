@@ -27,7 +27,7 @@ export class StartSessionSaver {
       return this.reportError('validating start session', error)
     }
 
-    if (validationResult.isInvalid) {
+    if (validationResult.isInvalid()) {
       return Response.of409(validationResult.getErrorMessage())
     }
 
