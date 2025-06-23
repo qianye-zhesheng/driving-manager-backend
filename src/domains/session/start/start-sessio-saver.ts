@@ -3,6 +3,7 @@ import { Response } from '../response'
 import { ValidationResult } from '../validation-result'
 import { FindResult } from './find-result'
 import { StartSessionRepository } from './start-session-repository'
+import { StartSessionUpdateValidator } from './start-session-update-validator'
 import { StartSessionValidator } from './start-session-validator'
 
 export class StartSessionSaver {
@@ -36,12 +37,21 @@ export class StartSessionSaver {
         dateNumber,
       )
 
-      if (sameDateSession.exists()) {
-        await this.repository.update(this.drivingSession, sameDateSession.get())
+      if (sameDateSession.doesNotExist()) {
+        await this.repository.create(this.drivingSession)
         return Response.of200(this.drivingSession)
       }
 
-      await this.repository.create(this.drivingSession)
+      const validationResultOnUpdate: ValidationResult = new StartSessionUpdateValidator(
+        this.drivingSession,
+        sameDateSession.get(),
+      ).validate()
+
+      if (validationResultOnUpdate.isInvalid()) {
+        return Response.of409(validationResultOnUpdate.getErrorMessage())
+      }
+
+      await this.repository.update(this.drivingSession, sameDateSession.get())
       return Response.of200(this.drivingSession)
     } catch (error) {
       return this.reportError('saving driving session', error)
