@@ -23,9 +23,7 @@ export class StartSessionUpdateValidator {
   }
 
   private sessionHasNotFinished(): boolean {
-    return (
-      !this.existingDrivingSession.finished || this.existingDrivingSession.endOdometer == undefined
-    )
+    return !this.existingDrivingSession.finished
   }
 
   private hasSmarlerEndThanStart(): boolean {
