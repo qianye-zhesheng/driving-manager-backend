@@ -11,7 +11,7 @@ RuntimeはNode.jsを使用している。
 ### AWS CLIとAWS SAMのインストール
 
 ```bash
-$ sudo apt update && sudo apt upgrade -y && sudo apt install -y curl unzip git \
+sudo apt update && sudo apt upgrade -y && sudo apt install -y curl unzip git \
   && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
   && unzip awscliv2.zip \
   && sudo ./aws/install \
@@ -25,7 +25,7 @@ $ sudo apt update && sudo apt upgrade -y && sudo apt install -y curl unzip git \
 ### Node.js等のインストール
 
 ```bash
-$ sudo apt update && \ 
+sudo apt update && \ 
   sudo apt upgrade -y && \
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
   . "$HOME/.nvm/nvm.sh" && \
@@ -41,7 +41,9 @@ AWS access portalにて、「アクセスキー」のリンクをクリックす
 それを以下のダイアログで入力する。
 
 ```bash
-$ aws configure sso --use-device-code
+aws configure sso --use-device-code
+```
+```
 SSO session name (Recommended): default
 SSO start URL [None]: AWS access portalに表示されたもの
 SSO region [None]: AWS access portalに表示されたもの
@@ -56,14 +58,14 @@ Profile name [123456789011_ReadOnly]: default
 ### AWSへのログイン（開発時に都度操作が必要）
 
 ```bash
-$ aws sso login --use-device-code
+aws sso login --use-device-code
 ```
 ### ソースのcloneと準備
 
 ```bash
-$ git clone git@github.com:qianye-zhesheng/driving-manager-backend.git
-$ cd driving-manager
-$ npm install
+git clone git@github.com:qianye-zhesheng/driving-manager-backend.git
+cd driving-manager
+npm install
 ```
 
 
@@ -94,12 +96,12 @@ F12 開発者ツールを開き、ストレージ > ローカルストレージ�
 idTokenの値をコピーし、ターミナルの環境変数に設定する。
 
 ```bash
-$ export idToken=コピーした値
+export idToken=コピーした値
 ```
 curlでリクエストを投げる。
 
 ```bash
-$ curl -i -X POST \
+curl -i -X POST \
  -H "Content-Type: application/json" \
  -H "Authorization: Bearer ${idToken}" \
  -d '{"content": "sample"}' \
@@ -109,7 +111,7 @@ $ curl -i -X POST \
 ログは以下のようにして取得できる。
 
 ```bash
-$ sam logs --tail
+sam logs --tail
 ```
 
 
