@@ -2,10 +2,8 @@
 
 ## 概要
 
-運行管理アプリ Driving Managerのバックエンド。
-
-AWS Serverless Application Model (AWS SAM)で実装されている。
-
+運行管理アプリ Driving Managerのバックエンド。  
+AWS Serverless Application Model (AWS SAM)で実装されている。  
 RuntimeはNode.jsを使用している。
 
 ## 環境構築
@@ -37,12 +35,9 @@ $ sudo apt update && \
 
 ### AWSへのログインの初期設定
 
-[公式マニュアル](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html)
-
-AWSのAdministratorAccessの許可セットが割り当てられたユーザーを使用する。
-
-AWS access portalにて、「アクセスキー」のリンクをクリックすると、SSO start URLとSSO regionが確認できる。
-
+[公式マニュアル](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html)  
+AWSのAdministratorAccessの許可セットが割り当てられたユーザーを使用する。  
+AWS access portalにて、「アクセスキー」のリンクをクリックすると、SSO start URLとSSO regionが確認できる。  
 それを以下のダイアログで入力する。
 
 ```bash
@@ -86,20 +81,16 @@ npm run test
 sam sync --watch
 ```
 
-ターミナルへの出力結果の最後のほうに、URLが表示される。
-このURLを次項で使用する。
-
+ターミナルへの出力結果の最後のほうに、URLが表示される。  
+このURLを次項で使用する。  
 （URLがhttps://xxxx/Prod/となっているが、問題なし。本番環境はドメイン自体が異なる）
 
 ### APIの実行方法
 
 まず、[Driving Managerのフロントエンド側](https://github.com/qianye-zhesheng/driving-manager) の
-開発環境を起動させる。
-
-AWS Cognito経由でログインする。
-
-F12 開発者ツールを開き、ストレージ > ローカルストレージから、idTokenを探す。
-
+開発環境を起動させる。  
+AWS Cognito経由でログインする。  
+F12 開発者ツールを開き、ストレージ > ローカルストレージから、idTokenを探す。  
 idTokenの値をコピーし、ターミナルの環境変数に設定する。
 
 ```bash
