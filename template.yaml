@@ -126,6 +126,36 @@ Resources:
             const __filename = fileURLToPath(import.meta.url);
             const __dirname = path.dirname(__filename);
 
+  sessionPutEndFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/session/put-end.putEndHandler
+      Description: save the end record of a driving session
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: !Ref DrivingSessionsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /session/put-end
+            Method: PUT
+    Metadata:   
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: esm
+        Minify: false
+        OutExtension:
+          - .js=.mjs
+        Target: "es2020"
+        Sourcemap: true
+        Banner:
+          - js=import path from 'path';
+            import { fileURLToPath } from 'url';
+            import { createRequire as topLevelCreateRequire } from 'module';
+            const require = topLevelCreateRequire(import.meta.url);
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
 
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllItemsFunction:
