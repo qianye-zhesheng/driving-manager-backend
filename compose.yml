@@ -1,0 +1,8 @@
+services:
+  dev:
+    image: qianyezhesheng/aws-sam:latest
+    volumes:
+     - .:/app
+    working_dir: /app
+    tty: true
+    stdin_open: true

@@ -8,29 +8,20 @@ RuntimeはNode.jsを使用している。
 
 ## 環境構築
 
-### AWS CLIとAWS SAMのインストール
+### 必要なもの
+
+* Visual Studio Code
+* Docker Engine
+* Docker Compose
+
+### ソースの準備
 
 ```bash
-sudo apt update && sudo apt upgrade -y && sudo apt install -y curl unzip git \
-  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-  && unzip awscliv2.zip \
-  && sudo ./aws/install \
-  && rm awscliv2.zip \
-  && curl -L "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip" -o "aws-sam-cli-linux-x86_64.zip" \
-  && unzip aws-sam-cli-linux-x86_64.zip -d sam-installation \
-  && sudo ./sam-installation/install \
-  && rm aws-sam-cli-linux-x86_64.zip \
-```
-
-### Node.js等のインストール
-
-```bash
-sudo apt update && \ 
-  sudo apt upgrade -y && \
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
-  . "$HOME/.nvm/nvm.sh" && \
-  nvm install 22 && \
-  npm install -g esbuild
+git clone git@github.com:qianye-zhesheng/driving-manager-backend.git
+cd driving-manager-backend
+docker compose up -d
+docker compose exec dev bash
+npm install
 ```
 
 ### AWSへのログインの初期設定
@@ -55,19 +46,14 @@ CLI default output format (json if not specified) [None]: json
 Profile name [123456789011_ReadOnly]: default
 ```
 
-### AWSへのログイン（開発時に都度操作が必要）
+## 開発時に毎回やること
 
 ```bash
+cd driving-manager-backend
+docker compose start
+docker compose exec dev bash
 aws sso login --use-device-code
 ```
-### ソースのcloneと準備
-
-```bash
-git clone git@github.com:qianye-zhesheng/driving-manager-backend.git
-cd driving-manager
-npm install
-```
-
 
 ## 単体テスト方法
 
