@@ -78,21 +78,7 @@ sam sync --watch
 まず、[Driving Managerのフロントエンド側](https://github.com/qianye-zhesheng/driving-manager) の
 開発環境を起動させる。  
 AWS Cognito経由でログインする。  
-F12 開発者ツールを開き、ストレージ > ローカルストレージから、idTokenを探す。  
-idTokenの値をコピーし、ターミナルの環境変数に設定する。
-
-```bash
-export idToken=コピーした値
-```
-curlでリクエストを投げる。
-
-```bash
-curl -i -X POST \
- -H "Content-Type: application/json" \
- -H "Authorization: Bearer ${idToken}" \
- -d '{"content": "sample"}' \
- https://xxxxxxx.execute-api.ap-northeast-3.amazonaws.com/Prod/path/to/api
- ```
+[バックエンドAPIテスト](http://localhost:5173/__tools__/backend-api-test) 機能を使って、APIをテストできる。
 
 ログは以下のようにして取得できる。
 
