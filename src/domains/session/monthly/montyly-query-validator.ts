@@ -5,17 +5,17 @@ import { Month } from './month'
 
 export class MonthlyQueryValidator {
   private constructor(
-    private readonly queryParams: APIGatewayProxyEventQueryStringParameters | undefined,
+    private readonly queryParams: APIGatewayProxyEventQueryStringParameters | null,
   ) {}
 
   public static from(
-    queryParams: APIGatewayProxyEventQueryStringParameters | undefined,
+    queryParams: APIGatewayProxyEventQueryStringParameters | null,
   ): MonthlyQueryValidator {
     return new MonthlyQueryValidator(queryParams)
   }
 
   public validate(): ValidationResult {
-    if (this.queryParams === undefined) {
+    if (this.queryParams == null) {
       return ValidationResult.invalid('query parameters are missing')
     }
 

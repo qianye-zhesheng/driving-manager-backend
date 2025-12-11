@@ -7,8 +7,8 @@ describe('MonthlyQueryValidatorのテスト', () => {
     jest.restoreAllMocks()
   })
 
-  test('queryParamsがundefinedの場合、無効なValidationResultを返すこと', () => {
-    const validator = MonthlyQueryValidator.from(undefined)
+  test('queryParamsがnullの場合、無効なValidationResultを返すこと', () => {
+    const validator = MonthlyQueryValidator.from(null)
     const result = validator.validate()
     expect(result.isInvalid()).toBe(true)
     expect(result.getErrorMessage()).toBe('query parameters are missing')
