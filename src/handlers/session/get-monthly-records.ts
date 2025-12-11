@@ -3,6 +3,7 @@ import type { APIGatewayProxyResult } from 'aws-lambda'
 import { CorsHeaders } from '../../config/cors-headers'
 import { MonthlyQueryValidator } from '../../domains/session/monthly/montyly-query-validator'
 import { Response } from '../../domains/session/response'
+import { AuthUserInfo } from '../../auth/auth-user-info'
 
 export const getMonthlyRecordsHandler = async (
   event: APIGatewayProxyEvent,
@@ -15,6 +16,13 @@ export const getMonthlyRecordsHandler = async (
   if (validationResult.isInvalid()) {
     return Response.of400(validationResult.getErrorMessage()).toApiResult()
   }
+
+  const authInfo = AuthUserInfo.from(event)
+  if (authInfo.isNotAuthenticated()) {
+    return Response.of401('Unauthorized').toApiResult()
+  }
+
+  const userId = authInfo.getUserId()
 
   const result: APIGatewayProxyResult = {
     statusCode: 200,

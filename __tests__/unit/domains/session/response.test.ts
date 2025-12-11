@@ -44,6 +44,19 @@ describe('Responseのテスト', () => {
     expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
   })
 
+  it('should create a 401 response with a message', () => {
+    const message = 'Unauthorized'
+    const response = Response.of401(message)
+
+    expect(response.toApiResult()).toEqual({
+      statusCode: 401,
+      body: JSON.stringify({ message: message }),
+      headers: headers,
+    })
+
+    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
+  })
+
   it('should create a 409 response with a message', () => {
     const message = 'Duplicated data'
     const response = Response.of409(message)

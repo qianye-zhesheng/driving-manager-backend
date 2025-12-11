@@ -16,6 +16,10 @@ export class Response {
     return new Response(400, JSON.stringify({ message: message }))
   }
 
+  public static of401(message: string): Response {
+    return new Response(401, JSON.stringify({ message: message }))
+  }
+
   public static of409(message: string): Response {
     return new Response(409, JSON.stringify({ message: message }))
   }
