@@ -162,7 +162,7 @@ import type { APIGatewayProxyEvent } from 'aws-lambda'
 import type { APIGatewayProxyResult } from 'aws-lambda'
 import { CorsHeaders } from '../../config/cors-headers'
 
-export const postAnswerHandler = async (
+export const postDataHandler = async (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   // All log statements are written to CloudWatch
@@ -170,7 +170,7 @@ export const postAnswerHandler = async (
 
   const result: APIGatewayProxyResult = {
     statusCode: 200,
-    body: JSON.stringify({ message: 'success' })
+    body: JSON.stringify({ message: 'success' }),
     headers: CorsHeaders.get(),
   }
 
