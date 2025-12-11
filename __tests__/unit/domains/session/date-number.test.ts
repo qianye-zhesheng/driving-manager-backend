@@ -17,4 +17,10 @@ describe('DateNumberのテスト', () => {
     const result = DateNumber.of('2025-01-01').get()
     expect(result).toBe(20250101)
   })
+
+  test('Date型から初期化してgetでYYYYMMDDを返すこと', () => {
+    const date = new Date(2025, 0, 1) // 月は0始まり
+    const result = DateNumber.at(date).get()
+    expect(result).toBe(20250101)
+  })
 })

@@ -157,6 +157,37 @@ Resources:
             const __filename = fileURLToPath(import.meta.url);
             const __dirname = path.dirname(__filename);
 
+  sessionGetMonthlyRecordsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/session/get-monthly-records.getMonthlyRecordsHandler
+      Description: get monthly driving session records
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: !Ref DrivingSessionsTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /session/get-monthly-records
+            Method: GET
+    Metadata:   
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: esm
+        Minify: false
+        OutExtension:
+          - .js=.mjs
+        Target: "es2020"
+        Sourcemap: false
+        Banner:
+          - js=import path from 'path';
+            import { fileURLToPath } from 'url';
+            import { createRequire as topLevelCreateRequire } from 'module';
+            const require = topLevelCreateRequire(import.meta.url);
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllItemsFunction:
     Type: AWS::Serverless::Function

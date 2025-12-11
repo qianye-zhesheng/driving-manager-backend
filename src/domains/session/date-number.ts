@@ -28,6 +28,14 @@ export class DateNumber {
     return new DateNumber(year, month, day)
   }
 
+  public static at(date: Date): DateNumber {
+    const dayjsDate = dayjs(date)
+    const year: number = dayjsDate.year()
+    const month: number = dayjsDate.month() + 1
+    const day: number = dayjsDate.date()
+    return new DateNumber(year, month, day)
+  }
+
   public get(): number {
     return this.year * DateNumber.YEAR_DIGITS + this.month * DateNumber.MONTH_DIGITS + this.day
   }
