@@ -1,7 +1,7 @@
 import type { APIGatewayProxyEvent } from 'aws-lambda'
 import type { APIGatewayProxyResult } from 'aws-lambda'
 import { CorsHeaders } from '../../config/cors-headers'
-import { MonthlyQueryValidator } from '../../domains/session/monthly/montyly-query-validator'
+import { MonthlyQueryValidator } from '../../domains/session/monthly/monthly-query-validator'
 import { Response } from '../../domains/session/response'
 import { AuthUserInfo } from '../../auth/auth-user-info'
 

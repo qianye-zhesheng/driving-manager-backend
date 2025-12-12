@@ -1,5 +1,5 @@
 import { Month } from '../../../../../src/domains/session/monthly/month'
-import { MonthlyQueryValidator } from '../../../../../src/domains/session/monthly/montyly-query-validator'
+import { MonthlyQueryValidator } from '../../../../../src/domains/session/monthly/monthly-query-validator'
 import { Year } from '../../../../../src/domains/session/monthly/year'
 
 describe('MonthlyQueryValidatorのテスト', () => {
