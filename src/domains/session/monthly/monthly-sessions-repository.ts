@@ -30,6 +30,10 @@ export class MonthlySessionsRepository {
       }),
     )
 
+    if (drivingSessions.Count == 0) {
+      return []
+    }
+
     return drivingSessions.Items.map((item) => this.toEntity(item))
   }
 
