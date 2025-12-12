@@ -1,11 +1,11 @@
 import type { APIGatewayProxyEvent } from 'aws-lambda'
 import type { APIGatewayProxyResult } from 'aws-lambda'
-import { CorsHeaders } from '../../config/cors-headers'
 import { QueryValidator } from '../../domains/session/monthly/query-validator'
 import { Response } from '../../domains/session/monthly/response'
 import { AuthUserInfo } from '../../auth/auth-user-info'
 import { MonthlySessionsRepository } from '../../domains/session/monthly/monthly-sessions-repository'
 import { QueryParser } from '../../domains/session/monthly/query-parser'
+import { DrivingSessionSearcher } from '../../domains/session/monthly/driving-session-searcher'
 
 const TABLE_NAME: string = process.env.DRIVING_SESSIONS_TABLE as string
 
@@ -32,13 +32,14 @@ export const getMonthlyRecordsHandler = async (
 
   const yearMonthQuery = QueryParser.from(event.queryStringParameters).parse()
 
-  const records = await repository.searchSessionsByYearMonth(userId, yearMonthQuery)
+  const response: Response = (
+    await new DrivingSessionSearcher(repository, userId, yearMonthQuery).search()
+  )
+    .calc()
+    .summarize()
 
-  const result: APIGatewayProxyResult = {
-    statusCode: 200,
-    body: JSON.stringify({ message: 'success', records: records }),
-    headers: CorsHeaders.get(),
-  }
-
-  return result
+  console.info(
+    `response from: ${event.path} statusCode: ${response.getStatusCode()} body: ${response.getBody()}`,
+  )
+  return response.toApiResult()
 }
