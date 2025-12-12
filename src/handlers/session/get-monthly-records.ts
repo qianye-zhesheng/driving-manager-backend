@@ -4,6 +4,12 @@ import { CorsHeaders } from '../../config/cors-headers'
 import { MonthlyQueryValidator } from '../../domains/session/monthly/monthly-query-validator'
 import { Response } from '../../domains/session/response'
 import { AuthUserInfo } from '../../auth/auth-user-info'
+import { MonthlySessionsRepository } from '../../domains/session/monthly/monthly-sessions-repository'
+import { QueryParser } from '../../domains/session/monthly/query-parser'
+
+const TABLE_NAME: string = process.env.DRIVING_SESSIONS_TABLE as string
+
+const repository: MonthlySessionsRepository = new MonthlySessionsRepository(TABLE_NAME)
 
 export const getMonthlyRecordsHandler = async (
   event: APIGatewayProxyEvent,
@@ -24,9 +30,13 @@ export const getMonthlyRecordsHandler = async (
 
   const userId = authInfo.getUserId()
 
+  const yearMonthQuery = QueryParser.from(event.queryStringParameters).parse()
+
+  const records = await repository.searchSessionsByYearMonth(userId, yearMonthQuery)
+
   const result: APIGatewayProxyResult = {
     statusCode: 200,
-    body: JSON.stringify({ message: 'success' }),
+    body: JSON.stringify({ message: 'success', records: records }),
     headers: CorsHeaders.get(),
   }
 
