@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventQueryStringParameters } from 'aws-lambda'
-import { MonthlyQueryValidator } from './monthly-query-validator'
+import { QueryValidator } from './query-validator'
 import { YearMonthQuery } from './year-month-query'
 import { Year } from './year'
 import { Month } from './month'
@@ -8,7 +8,7 @@ export class QueryParser {
   private constructor(private readonly queryParams: APIGatewayProxyEventQueryStringParameters) {}
 
   public static from(queryParams: APIGatewayProxyEventQueryStringParameters | null): QueryParser {
-    if (MonthlyQueryValidator.from(queryParams).validate().isInvalid()) {
+    if (QueryValidator.from(queryParams).validate().isInvalid()) {
       throw new Error('Invalid query parameters')
     }
     return new QueryParser(queryParams)

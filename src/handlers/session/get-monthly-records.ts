@@ -1,7 +1,7 @@
 import type { APIGatewayProxyEvent } from 'aws-lambda'
 import type { APIGatewayProxyResult } from 'aws-lambda'
 import { CorsHeaders } from '../../config/cors-headers'
-import { MonthlyQueryValidator } from '../../domains/session/monthly/monthly-query-validator'
+import { QueryValidator } from '../../domains/session/monthly/query-validator'
 import { Response } from '../../domains/session/response'
 import { AuthUserInfo } from '../../auth/auth-user-info'
 import { MonthlySessionsRepository } from '../../domains/session/monthly/monthly-sessions-repository'
@@ -17,7 +17,7 @@ export const getMonthlyRecordsHandler = async (
   // All log statements are written to CloudWatch
   console.info('received:', event)
 
-  const validationResult = MonthlyQueryValidator.from(event.queryStringParameters).validate()
+  const validationResult = QueryValidator.from(event.queryStringParameters).validate()
 
   if (validationResult.isInvalid()) {
     return Response.of400(validationResult.getErrorMessage()).toApiResult()

@@ -3,15 +3,15 @@ import { ValidationResult } from '../validation-result'
 import { Year } from './year'
 import { Month } from './month'
 
-export class MonthlyQueryValidator {
+export class QueryValidator {
   private constructor(
     private readonly queryParams: APIGatewayProxyEventQueryStringParameters | null,
   ) {}
 
   public static from(
     queryParams: APIGatewayProxyEventQueryStringParameters | null,
-  ): MonthlyQueryValidator {
-    return new MonthlyQueryValidator(queryParams)
+  ): QueryValidator {
+    return new QueryValidator(queryParams)
   }
 
   public validate(): ValidationResult {

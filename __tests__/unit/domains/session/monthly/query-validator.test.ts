@@ -1,14 +1,14 @@
 import { Month } from '../../../../../src/domains/session/monthly/month'
-import { MonthlyQueryValidator } from '../../../../../src/domains/session/monthly/monthly-query-validator'
+import { QueryValidator } from '../../../../../src/domains/session/monthly/query-validator'
 import { Year } from '../../../../../src/domains/session/monthly/year'
 
-describe('MonthlyQueryValidatorのテスト', () => {
+describe('QueryValidatorのテスト', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
   })
 
   test('queryParamsがnullの場合、無効なValidationResultを返すこと', () => {
-    const validator = MonthlyQueryValidator.from(null)
+    const validator = QueryValidator.from(null)
     const result = validator.validate()
     expect(result.isInvalid()).toBe(true)
     expect(result.getErrorMessage()).toBe('query parameters are missing')
@@ -20,7 +20,7 @@ describe('MonthlyQueryValidatorのテスト', () => {
     })
 
     const queryParams = { year: 'invalidYear', month: '5' }
-    const validator = MonthlyQueryValidator.from(queryParams)
+    const validator = QueryValidator.from(queryParams)
     const result = validator.validate()
 
     expect(Year.of).toHaveBeenCalledTimes(1)
@@ -34,7 +34,7 @@ describe('MonthlyQueryValidatorのテスト', () => {
     })
 
     const queryParams = { year: '2023', month: 'invalidMonth' }
-    const validator = MonthlyQueryValidator.from(queryParams)
+    const validator = QueryValidator.from(queryParams)
     const result = validator.validate()
 
     expect(Month.of).toHaveBeenCalledTimes(1)
@@ -44,7 +44,7 @@ describe('MonthlyQueryValidatorのテスト', () => {
 
   test('yearとmonthが有効な場合、有効なValidationResultを返すこと', () => {
     const queryParams = { year: '2023', month: '5' }
-    const validator = MonthlyQueryValidator.from(queryParams)
+    const validator = QueryValidator.from(queryParams)
     const result = validator.validate()
 
     expect(result.isValid()).toBe(true)

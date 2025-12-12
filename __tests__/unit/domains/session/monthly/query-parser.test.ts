@@ -1,5 +1,5 @@
 import { Month } from '../../../../../src/domains/session/monthly/month'
-import { MonthlyQueryValidator } from '../../../../../src/domains/session/monthly/monthly-query-validator'
+import { QueryValidator } from '../../../../../src/domains/session/monthly/query-validator'
 import { QueryParser } from '../../../../../src/domains/session/monthly/query-parser'
 import { Year } from '../../../../../src/domains/session/monthly/year'
 import { ValidationResult } from '../../../../../src/domains/session/validation-result'
@@ -11,7 +11,7 @@ describe('QueryParserのテスト', () => {
 
   test('クエリ文字列が無効な場合、例外を投げること', () => {
     jest
-      .spyOn(MonthlyQueryValidator.prototype, 'validate')
+      .spyOn(QueryValidator.prototype, 'validate')
       .mockReturnValue(ValidationResult.invalid('Invalid query parameters'))
 
     const invalidQueryParams = { year: '2023', month: '13' } // 無効な月
@@ -19,13 +19,11 @@ describe('QueryParserのテスト', () => {
       QueryParser.from(invalidQueryParams)
     }).toThrow('Invalid query parameters')
 
-    expect(MonthlyQueryValidator.prototype.validate).toHaveBeenCalledTimes(1)
+    expect(QueryValidator.prototype.validate).toHaveBeenCalledTimes(1)
   })
 
   test('クエリ文字列が有効な場合、YearMonthQueryを正しく解析できること', () => {
-    jest
-      .spyOn(MonthlyQueryValidator.prototype, 'validate')
-      .mockReturnValue(ValidationResult.valid())
+    jest.spyOn(QueryValidator.prototype, 'validate').mockReturnValue(ValidationResult.valid())
 
     jest.spyOn(Year, 'of')
     jest.spyOn(Month, 'of')
@@ -37,7 +35,7 @@ describe('QueryParserのテスト', () => {
     const yearMonthQuery = parser.parse()
 
     expect(yearMonthQuery.from().get()).toBe(20230501)
-    expect(MonthlyQueryValidator.prototype.validate).toHaveBeenCalledTimes(1)
+    expect(QueryValidator.prototype.validate).toHaveBeenCalledTimes(1)
     expect(Year.of).toHaveBeenCalledWith('2023')
     expect(Month.of).toHaveBeenCalledWith('5')
     expect(Year.prototype.get).toHaveBeenCalled()
