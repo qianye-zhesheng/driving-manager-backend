@@ -1,6 +1,5 @@
-import { DrivingSession } from '../../../../src/domains/session/driving-session'
-import { Response } from '../../../../src/domains/session/response'
-import { CorsHeaders } from '../../../../src/config/cors-headers'
+import { Response } from '../../../../../src/domains/session/monthly/response'
+import { CorsHeaders } from '../../../../../src/config/cors-headers'
 
 describe('Responseのテスト', () => {
   const headers: { [header: string]: string } = {
@@ -13,43 +12,12 @@ describe('Responseのテスト', () => {
     jest.spyOn(CorsHeaders, 'get').mockReturnValue(headers)
   })
 
-  it('should create a 200 response with driving session', () => {
-    const drivingSession: DrivingSession = {
-      userId: 'user123',
-      dateNumber: 20250101,
-      operationDate: '2025-01-01',
-      finished: false,
-      startOdometer: 10000,
-    }
-    const response = Response.of200(drivingSession)
-
-    expect(response.toApiResult()).toEqual({
-      statusCode: 200,
-      body: JSON.stringify(drivingSession),
-      headers: headers,
-    })
-    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
-  })
-
   it('should create a 400 response with a message', () => {
     const message = 'Bad Request'
     const response = Response.of400(message)
 
     expect(response.toApiResult()).toEqual({
       statusCode: 400,
-      body: JSON.stringify({ message: message }),
-      headers: headers,
-    })
-
-    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
-  })
-
-  it('should create a 409 response with a message', () => {
-    const message = 'Duplicated data'
-    const response = Response.of409(message)
-
-    expect(response.toApiResult()).toEqual({
-      statusCode: 409,
       body: JSON.stringify({ message: message }),
       headers: headers,
     })
