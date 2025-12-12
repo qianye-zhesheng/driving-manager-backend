@@ -5,6 +5,8 @@ import { DateNumber } from '../date-number'
 
 export class YearMonthQuery {
   private constructor(
+    private readonly year: Year,
+    private readonly month: Month,
     private readonly firstDateNumber: DateNumber,
     private readonly lastDateNumber: DateNumber,
   ) {}
@@ -22,7 +24,7 @@ export class YearMonthQuery {
       .endOf('month')
     const lastDateNumber = DateNumber.at(lastDate.toDate())
 
-    return new YearMonthQuery(firstDateNumber, lastDateNumber)
+    return new YearMonthQuery(year, month, firstDateNumber, lastDateNumber)
   }
 
   public from(): DateNumber {
@@ -31,5 +33,13 @@ export class YearMonthQuery {
 
   public to(): DateNumber {
     return this.lastDateNumber
+  }
+
+  public getYear(): Year {
+    return this.year
+  }
+
+  public getMonth(): Month {
+    return this.month
   }
 }

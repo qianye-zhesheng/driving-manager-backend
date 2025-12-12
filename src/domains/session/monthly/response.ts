@@ -1,11 +1,16 @@
 import { APIGatewayProxyResult } from 'aws-lambda'
 import { CorsHeaders } from '../../../config/cors-headers'
+import { MonthlyRecords } from './monthly-records'
 
 export class Response {
   private constructor(
     private readonly statusCode: number,
     private readonly body: string,
   ) {}
+
+  public static of200(monthlyRecords: MonthlyRecords): Response {
+    return new Response(200, JSON.stringify(monthlyRecords))
+  }
 
   public static of400(message: string): Response {
     return new Response(400, JSON.stringify({ message: message }))

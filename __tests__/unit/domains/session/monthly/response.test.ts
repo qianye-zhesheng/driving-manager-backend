@@ -12,6 +12,39 @@ describe('Responseのテスト', () => {
     jest.spyOn(CorsHeaders, 'get').mockReturnValue(headers)
   })
 
+  it('should create a 200 response with monthly records', () => {
+    const monthlyRecords = {
+      summary: {
+        year: 2024,
+        month: 6,
+        totalOfficialDistance: 1500,
+        totalPrivateDistance: 500,
+        officialPercentage: 75,
+        privatePercentage: 25,
+      },
+      records: [
+        {
+          operationDate: '2024-06-01',
+          startOdometer: 10000,
+          endOdometer: 10200,
+          finished: true,
+          officialDistance: 150,
+          privateDistance: 50,
+        },
+      ],
+    }
+
+    const response = Response.of200(monthlyRecords)
+
+    expect(response.toApiResult()).toEqual({
+      statusCode: 200,
+      body: JSON.stringify(monthlyRecords),
+      headers: headers,
+    })
+
+    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
+  })
+
   it('should create a 400 response with a message', () => {
     const message = 'Bad Request'
     const response = Response.of400(message)

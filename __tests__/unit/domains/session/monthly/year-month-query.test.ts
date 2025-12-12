@@ -36,4 +36,20 @@ describe('YearMonthQueryのテスト', () => {
     expect(Year.prototype.get).toHaveBeenCalled()
     expect(Month.prototype.get).toHaveBeenCalled()
   })
+
+  test('getYearでYearが取得できること', () => {
+    const year = Year.of('2022')
+    const month = Month.of('3')
+    const query = YearMonthQuery.of(year, month)
+
+    expect(query.getYear()).toEqual(year)
+  })
+
+  test('getMonthでMonthが取得できること', () => {
+    const year = Year.of('2022')
+    const month = Month.of('3')
+    const query = YearMonthQuery.of(year, month)
+
+    expect(query.getMonth()).toEqual(month)
+  })
 })
