@@ -12,6 +12,10 @@ export class Response {
     return new Response(400, JSON.stringify({ message: message }))
   }
 
+  public static of401(message: string): Response {
+    return new Response(401, JSON.stringify({ message: message }))
+  }
+
   public static of200(answerParam: AnswerParam, dateTime: string): Response {
     const responseBody = {
       userId: answerParam.userId,

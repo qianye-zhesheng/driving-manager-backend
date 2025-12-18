@@ -8,6 +8,7 @@ import { ParamParser } from '../../domains/check/post/param-parser'
 import { AnswerParam } from '../../domains/check/post/answer-param'
 import { Response } from '../../domains/check/post/response'
 import { AnswerRepository } from '../../domains/check/post/answer-repository'
+import { AuthUserInfo } from '../../auth/auth-user-info'
 
 const TABLE_NAME: string = process.env.CHECK_ANSWERS_TABLE as string
 
@@ -35,6 +36,11 @@ export const postAnswerHandler = async (
 
   const answerParam: AnswerParam = ParamParser.from(event.body as string).parse()
   const dateTime: string = dayjs().tz(TIMEZONE).format()
+
+  const authInfo = AuthUserInfo.from(event)
+  if (authInfo.isNotAuthenticated() || authInfo.getUserId() !== answerParam.userId) {
+    return Response.of401('Unauthorized').toApiResult()
+  }
 
   const response: Response = await repository.saveAnswer(answerParam, dateTime)
 

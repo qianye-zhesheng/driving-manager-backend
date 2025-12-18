@@ -4,11 +4,11 @@ import { ParamParser } from '../../../../src/domains/check/post/param-parser'
 import { Response } from '../../../../src/domains/check/post/response'
 import { AnswerRepository } from '../../../../src/domains/check/post/answer-repository'
 import { ValidationResult } from '../../../../src/domains/check/post/validation-result'
-import dayjs from 'dayjs'
 import event from '../../../../events/check/event-post-answer.json'
 import { AnswerParam } from '../../../../src/domains/check/post/answer-param'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { CorsHeaders } from '../../../../src/config/cors-headers'
+import { AuthUserInfo } from '../../../../src/auth/auth-user-info'
 
 describe('postAnswerHandlerのテスト', () => {
   const answerParam: AnswerParam = JSON.parse(event.body) as AnswerParam
@@ -31,6 +31,9 @@ describe('postAnswerHandlerのテスト', () => {
     jest.spyOn(AnswerRepository.prototype, 'saveAnswer').mockImplementation(() => {
       return Promise.resolve(Response.of200(answerParam, datetime))
     })
+
+    jest.spyOn(AuthUserInfo.prototype, 'isNotAuthenticated').mockReturnValue(false)
+    jest.spyOn(AuthUserInfo.prototype, 'getUserId').mockReturnValue('user123')
   })
 
   test('有効なparamなら200を返すこと', async () => {
@@ -54,6 +57,9 @@ describe('postAnswerHandlerのテスト', () => {
     expect(ParamValidator.prototype.validate).toHaveBeenCalledTimes(1)
     expect(AnswerRepository.prototype.saveAnswer).toHaveBeenCalledTimes(1)
     expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
+
+    expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(1)
+    expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(1)
   })
 
   test('無効なparamなら400を返すこと', async () => {
@@ -69,5 +75,48 @@ describe('postAnswerHandlerのテスト', () => {
     expect(ParamValidator.prototype.validate).toHaveBeenCalledTimes(1)
     expect(AnswerRepository.prototype.saveAnswer).toHaveBeenCalledTimes(0)
     expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
+
+    expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(0)
+    expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(0)
+  })
+
+  test('認証されていないと401を返すこと', async () => {
+    jest.spyOn(ParamValidator.prototype, 'validate').mockImplementation(() => {
+      return ValidationResult.valid()
+    })
+
+    jest.spyOn(AuthUserInfo.prototype, 'isNotAuthenticated').mockReturnValue(true)
+
+    const result = await postAnswerHandler(event as APIGatewayProxyEvent)
+
+    expect(result.statusCode).toBe(401)
+    expect(result.body).toBe(JSON.stringify({ message: 'Unauthorized' }))
+
+    expect(ParamValidator.prototype.validate).toHaveBeenCalledTimes(1)
+    expect(AnswerRepository.prototype.saveAnswer).toHaveBeenCalledTimes(0)
+    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
+
+    expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(1)
+    expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(0)
+  })
+
+  test('userIdが異なるとと401を返すこと', async () => {
+    jest.spyOn(ParamValidator.prototype, 'validate').mockImplementation(() => {
+      return ValidationResult.valid()
+    })
+
+    jest.spyOn(AuthUserInfo.prototype, 'getUserId').mockReturnValue('user345')
+
+    const result = await postAnswerHandler(event as APIGatewayProxyEvent)
+
+    expect(result.statusCode).toBe(401)
+    expect(result.body).toBe(JSON.stringify({ message: 'Unauthorized' }))
+
+    expect(ParamValidator.prototype.validate).toHaveBeenCalledTimes(1)
+    expect(AnswerRepository.prototype.saveAnswer).toHaveBeenCalledTimes(0)
+    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
+
+    expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(1)
+    expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(1)
   })
 })

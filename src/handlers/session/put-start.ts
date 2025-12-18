@@ -8,6 +8,7 @@ import { SessionParam } from '../../domains/session/session-param'
 import { DateNumber } from '../../domains/session/date-number'
 import { StartSessionSaver } from '../../domains/session/start/start-sessio-saver'
 import { StartSessionRepository } from '../../domains/session/start/start-session-repository'
+import { AuthUserInfo } from '../../auth/auth-user-info'
 
 const TABLE_NAME: string = process.env.DRIVING_SESSIONS_TABLE as string
 
@@ -29,6 +30,11 @@ export const putStartHandler = async (
   }
 
   const sessionParam: SessionParam = ParamParser.from(event.body as string).parse()
+
+  const authInfo = AuthUserInfo.from(event)
+  if (authInfo.isNotAuthenticated() || authInfo.getUserId() !== sessionParam.userId) {
+    return Response.of401('Unauthorized').toApiResult()
+  }
 
   const drivingSession: DrivingSession = {
     userId: sessionParam.userId,

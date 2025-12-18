@@ -6,6 +6,7 @@ import { Response } from '../../domains/session/response'
 import { SessionParam } from '../../domains/session/session-param'
 import { EndSessionRepository } from '../../domains/session/end/end-session-repository'
 import { EndSessionSaver } from '../../domains/session/end/end-sessio-saver'
+import { AuthUserInfo } from '../../auth/auth-user-info'
 
 const TABLE_NAME: string = process.env.DRIVING_SESSIONS_TABLE as string
 
@@ -27,6 +28,11 @@ export const putEndHandler = async (
   }
 
   const sessionParam: SessionParam = ParamParser.from(event.body as string).parse()
+
+  const authInfo = AuthUserInfo.from(event)
+  if (authInfo.isNotAuthenticated() || authInfo.getUserId() !== sessionParam.userId) {
+    return Response.of401('Unauthorized').toApiResult()
+  }
 
   const response: Response = await new EndSessionSaver(repository, sessionParam).save()
 

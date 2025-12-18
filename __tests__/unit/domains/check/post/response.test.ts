@@ -26,6 +26,19 @@ describe('Responseのテスト', () => {
     expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
   })
 
+  it('should create a 401 response with a message', () => {
+    const message = 'Unauthorized'
+    const response = Response.of401(message)
+
+    expect(response.toApiResult()).toEqual({
+      statusCode: 401,
+      body: JSON.stringify({ message: message }),
+      headers: headers,
+    })
+
+    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
+  })
+
   it('should create a 200 response with answer parameters and dateTime', () => {
     const answerParam: AnswerParam = {
       userId: 'user123',
