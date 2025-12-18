@@ -1,6 +1,6 @@
-import { AnswerParam } from '../../../../../src/domains/check/post/answer-param'
 import { Response } from '../../../../../src/domains/check/post/response'
 import { CorsHeaders } from '../../../../../src/config/cors-headers'
+import { CheckAnswer } from '../../../../../src/domains/check/post/check-answer'
 
 describe('Responseのテスト', () => {
   const headers: { [header: string]: string } = {
@@ -39,9 +39,10 @@ describe('Responseのテスト', () => {
     expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
   })
 
-  it('should create a 200 response with answer parameters and dateTime', () => {
-    const answerParam: AnswerParam = {
+  it('should create a 200 response with CheckAnswer', () => {
+    const checkAnswer: CheckAnswer = {
       userId: 'user123',
+      dateTime: '2025-01-01T10:00:00+09:00',
       imSafeAnswer: {
         illness: 1,
         medication: 1,
@@ -58,17 +59,16 @@ describe('Responseのテスト', () => {
       },
       judgement: '制限なし',
     }
-    const dateTime: string = '2025-01-01T10:00:00+09:00'
-    const response = Response.of200(answerParam, dateTime)
+    const response = Response.of200(checkAnswer)
 
     expect(response.toApiResult()).toEqual({
       statusCode: 200,
       body: JSON.stringify({
-        userId: answerParam.userId,
-        dateTime: dateTime,
-        imSafeAnswer: answerParam.imSafeAnswer,
-        weatherAnswer: answerParam.weatherAnswer,
-        judgement: answerParam.judgement,
+        userId: checkAnswer.userId,
+        dateTime: checkAnswer.dateTime,
+        imSafeAnswer: checkAnswer.imSafeAnswer,
+        weatherAnswer: checkAnswer.weatherAnswer,
+        judgement: checkAnswer.judgement,
       }),
       headers: headers,
     })

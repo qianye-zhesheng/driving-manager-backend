@@ -9,14 +9,24 @@ import { AnswerParam } from '../../../../src/domains/check/post/answer-param'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { CorsHeaders } from '../../../../src/config/cors-headers'
 import { AuthUserInfo } from '../../../../src/auth/auth-user-info'
+import { CheckAnswer } from '../../../../src/domains/check/post/check-answer'
 
 describe('postAnswerHandlerのテスト', () => {
   const answerParam: AnswerParam = JSON.parse(event.body) as AnswerParam
+  const userId: string = 'user123'
   const datetime: string = '2025-01-01T00:00:00+09:00'
   const headers: { [header: string]: string } = {
     'Access-Control-Allow-Origin': 'http://localhost:5173',
     'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+  }
+
+  const checkAnswer: CheckAnswer = {
+    userId: userId,
+    dateTime: datetime,
+    imSafeAnswer: answerParam.imSafeAnswer,
+    weatherAnswer: answerParam.weatherAnswer,
+    judgement: answerParam.judgement,
   }
 
   beforeEach(() => {
@@ -29,7 +39,7 @@ describe('postAnswerHandlerのテスト', () => {
     jest.spyOn(CorsHeaders, 'get').mockReturnValue(headers)
 
     jest.spyOn(AnswerRepository.prototype, 'saveAnswer').mockImplementation(() => {
-      return Promise.resolve(Response.of200(answerParam, datetime))
+      return Promise.resolve(Response.of200(checkAnswer))
     })
 
     jest.spyOn(AuthUserInfo.prototype, 'isNotAuthenticated').mockReturnValue(false)
@@ -46,7 +56,7 @@ describe('postAnswerHandlerのテスト', () => {
     expect(result.statusCode).toBe(200)
     expect(result.body).toBe(
       JSON.stringify({
-        userId: answerParam.userId,
+        userId: userId,
         dateTime: datetime,
         imSafeAnswer: answerParam.imSafeAnswer,
         weatherAnswer: answerParam.weatherAnswer,
@@ -98,25 +108,5 @@ describe('postAnswerHandlerのテスト', () => {
 
     expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(1)
     expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(0)
-  })
-
-  test('userIdが異なるとと401を返すこと', async () => {
-    jest.spyOn(ParamValidator.prototype, 'validate').mockImplementation(() => {
-      return ValidationResult.valid()
-    })
-
-    jest.spyOn(AuthUserInfo.prototype, 'getUserId').mockReturnValue('user345')
-
-    const result = await postAnswerHandler(event as APIGatewayProxyEvent)
-
-    expect(result.statusCode).toBe(401)
-    expect(result.body).toBe(JSON.stringify({ message: 'Unauthorized' }))
-
-    expect(ParamValidator.prototype.validate).toHaveBeenCalledTimes(1)
-    expect(AnswerRepository.prototype.saveAnswer).toHaveBeenCalledTimes(0)
-    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
-
-    expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(1)
-    expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(1)
   })
 })

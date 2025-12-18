@@ -17,7 +17,6 @@ const WeatherAnswer = z.object({
 })
 
 export const AnswerParam = z.object({
-  userId: z.string(),
   imSafeAnswer: ImSafeAnswer,
   weatherAnswer: WeatherAnswer,
   judgement: z.string(),

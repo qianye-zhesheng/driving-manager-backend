@@ -38,11 +38,15 @@ export const postAnswerHandler = async (
   const dateTime: string = dayjs().tz(TIMEZONE).format()
 
   const authInfo = AuthUserInfo.from(event)
-  if (authInfo.isNotAuthenticated() || authInfo.getUserId() !== answerParam.userId) {
+  if (authInfo.isNotAuthenticated()) {
     return Response.of401('Unauthorized').toApiResult()
   }
 
-  const response: Response = await repository.saveAnswer(answerParam, dateTime)
+  const response: Response = await repository.saveAnswer(
+    answerParam,
+    dateTime,
+    authInfo.getUserId(),
+  )
 
   // All log statements are written to CloudWatch
   console.info(

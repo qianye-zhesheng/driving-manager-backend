@@ -1,4 +1,4 @@
 {
   "httpMethod": "POST",
-  "body": "{\"userId\":\"user123\",\"imSafeAnswer\":{\"illness\":1,\"medication\":1,\"stress\":1,\"alcohol\":1,\"fatigue\":1,\"emotion\":1},\"weatherAnswer\":{\"wetRoad\":1,\"visibility\":1,\"icyRoad\":1,\"snow\":1},\"judgement\":\"no limitations\"}"
+  "body": "{\"imSafeAnswer\":{\"illness\":1,\"medication\":1,\"stress\":1,\"alcohol\":1,\"fatigue\":1,\"emotion\":1},\"weatherAnswer\":{\"wetRoad\":1,\"visibility\":1,\"icyRoad\":1,\"snow\":1},\"judgement\":\"no limitations\"}"
 }

@@ -1,6 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda'
-import { AnswerParam } from './answer-param'
 import { CorsHeaders } from '../../../config/cors-headers'
+import { CheckAnswer } from './check-answer'
 
 export class Response {
   private constructor(
@@ -16,15 +16,8 @@ export class Response {
     return new Response(401, JSON.stringify({ message: message }))
   }
 
-  public static of200(answerParam: AnswerParam, dateTime: string): Response {
-    const responseBody = {
-      userId: answerParam.userId,
-      dateTime: dateTime,
-      imSafeAnswer: answerParam.imSafeAnswer,
-      weatherAnswer: answerParam.weatherAnswer,
-      judgement: answerParam.judgement,
-    }
-    return new Response(200, JSON.stringify(responseBody))
+  public static of200(checkAnswer: CheckAnswer): Response {
+    return new Response(200, JSON.stringify(checkAnswer))
   }
 
   public static of500(message: string): Response {

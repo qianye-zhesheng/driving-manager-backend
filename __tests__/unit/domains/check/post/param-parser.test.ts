@@ -21,7 +21,6 @@ describe('ParamParserのテスト', () => {
 
   test('parseされた内容がAnswerParamの型であること', () => {
     const answerParam: AnswerParam = ParamParser.from(eventPostAnswer.body).parse()
-    expect(answerParam).toHaveProperty('userId', 'user123')
     expect(answerParam).toHaveProperty('imSafeAnswer')
     expect(answerParam).toHaveProperty('imSafeAnswer.illness', 1)
     expect(answerParam).toHaveProperty('imSafeAnswer.medication', 1)

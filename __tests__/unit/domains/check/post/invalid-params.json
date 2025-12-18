@@ -1,6 +1,5 @@
 {
   "valid": {
-    "userId": "user123",
     "imSafeAnswer": {
       "illness": 1,
       "medication": 1,
@@ -33,52 +32,31 @@
         "visibility": 1,
         "icyRoad": 1,
         "snow": 1
-      },
-      "judgement": "no limitations"
-    },
-    {
-      "userId": "user123",
-      "weatherAnswer": {
-        "wetRoad": 1,
-        "visibility": 1,
-        "icyRoad": 1,
-        "snow": 1
-      },
-      "judgement": "no limitations"
-    },
-    {
-      "userId": "user123",
-      "imSafeAnswer": {
-        "illness": 1,
-        "medication": 1,
-        "stress": 1,
-        "alcohol": 1,
-        "fatigue": 1,
-        "emotion": 1
-      },
-      "judgement": "no limitations"
-    },
-    {
-      "userId": "user123",
-      "imSafeAnswer": {
-        "illness": 1,
-        "medication": 1,
-        "stress": 1,
-        "alcohol": 1,
-        "fatigue": 1,
-        "emotion": 1
-      },
-      "weatherAnswer": {
-        "wetRoad": 1,
-        "visibility": 1,
-        "icyRoad": 1,
-        "snow": 1
       }
+    },
+    {
+      "weatherAnswer": {
+        "wetRoad": 1,
+        "visibility": 1,
+        "icyRoad": 1,
+        "snow": 1
+      },
+      "judgement": "no limitations"
+    },
+    {
+      "imSafeAnswer": {
+        "illness": 1,
+        "medication": 1,
+        "stress": 1,
+        "alcohol": 1,
+        "fatigue": 1,
+        "emotion": 1
+      },
+      "judgement": "no limitations"
     }
   ],
   "missingNestedContents": [
     {
-      "userId": "user123",
       "imSafeAnswer": {
         "illness": 1,
         "medication": 1,
@@ -95,7 +73,6 @@
       "judgement": "no limitations"
     },
     {
-      "userId": "user123",
       "imSafeAnswer": {
         "medication": 1,
         "stress": 1,
@@ -114,7 +91,6 @@
   ],
   "differentTypes": [
     {
-      "userId": 123,
       "imSafeAnswer": {
         "illness": 1,
         "medication": 1,
@@ -129,10 +105,9 @@
         "icyRoad": 1,
         "snow": 1
       },
-      "judgement": "no limitations"
+      "judgement": true
     },
     {
-      "userId": "user123",
       "imSafeAnswer": {
         "illness": "yes",
         "medication": 1,
@@ -150,7 +125,6 @@
       "judgement": true
     },
     {
-      "userId": "user123",
       "imSafeAnswer": {
         "illness": 1,
         "medication": 1,
