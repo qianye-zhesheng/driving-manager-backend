@@ -28,7 +28,6 @@ describe('put-end handler', () => {
   }
 
   const sessionParam: SessionParam = {
-    userId: 'user123',
     date: '2025-01-01',
     odometer: 10000,
   }
@@ -109,25 +108,5 @@ describe('put-end handler', () => {
 
     expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(1)
     expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(0)
-  })
-
-  test('userIdが異なると401を返すこと', async () => {
-    jest.spyOn(ParamValidator.prototype, 'validate').mockReturnValue(ValidationResult.valid())
-    jest.spyOn(EndSessionSaver.prototype, 'save').mockResolvedValue(Response.of200(drivingSession))
-
-    jest.spyOn(AuthUserInfo.prototype, 'getUserId').mockReturnValue('user345')
-
-    const result = await putEndHandler(event as APIGatewayProxyEvent)
-
-    expect(result.statusCode).toBe(401)
-    expect(result.body).toBe(JSON.stringify({ message: 'Unauthorized' }))
-
-    expect(ParamValidator.prototype.validate).toHaveBeenCalledTimes(1)
-    expect(ParamParser.prototype.parse).toHaveBeenCalledTimes(1)
-    expect(EndSessionSaver.prototype.save).toHaveBeenCalledTimes(0)
-    expect(CorsHeaders.get).toHaveBeenCalledTimes(1)
-
-    expect(AuthUserInfo.prototype.isNotAuthenticated).toHaveBeenCalledTimes(1)
-    expect(AuthUserInfo.prototype.getUserId).toHaveBeenCalledTimes(1)
   })
 })

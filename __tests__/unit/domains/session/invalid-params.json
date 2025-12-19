@@ -1,48 +1,32 @@
 {
   "valid": {
-    "userId": "user123",
     "date": "2025-01-01",
     "odometer": 10000
   },
   "noContents": {},
   "missingContents": [
     {
-      "date": "2025-01-01",
       "odometer": 10000
     },
     {
-      "userId": "user123",
-      "odometer": 10000
-    },
-    {
-      "userId": "user123",
       "date": "2025-01-01"
     }
   ],
 
   "differentTypes": [
     {
-      "userId": 123,
-      "date": "2025-01-01",
-      "odometer": 10000
-    },
-    {
-      "userId": "user123",
       "date": 20250101,
       "odometer": 10000
     },
     {
-      "userId": "user123",
       "date": "2025-01-01",
       "odometer": false
     },
     {
-      "userId": "user123",
       "date": "2025-1-1",
       "odometer": 10000
     },
     {
-      "userId": "user123",
       "date": "2025-01-32",
       "odometer": 10000
     }

@@ -1,18 +1,19 @@
-import { TableStatus } from '@aws-sdk/client-dynamodb'
 import { DrivingSession } from '../../../../../src/domains/session/driving-session'
 import { EndSessionSaver } from '../../../../../src/domains/session/end/end-sessio-saver'
 import { EndSessionRepository } from '../../../../../src/domains/session/end/end-session-repository'
 import { EndSessionValidator } from '../../../../../src/domains/session/end/end-session-validator'
 import { FindResult } from '../../../../../src/domains/session/end/find-result'
+import { SessionParam } from '../../../../../src/domains/session/session-param'
 import { ValidationResult } from '../../../../../src/domains/session/validation-result'
 
 describe('EndSessionValidatorのテスト', () => {
   const tableName = 'DrivingSessions'
-  const sessionParam = {
-    userId: 'userId',
+  const sessionParam: SessionParam = {
     date: '2025-01-01',
     odometer: 1001,
   }
+
+  const userId = 'userId'
 
   const sameDateSession: DrivingSession = {
     userId: 'userId',
@@ -40,6 +41,7 @@ describe('EndSessionValidatorのテスト', () => {
     const result = await new EndSessionSaver(
       new EndSessionRepository(tableName),
       sessionParam,
+      userId,
     ).save()
 
     expect(result.getStatusCode()).toBe(409)
@@ -64,6 +66,7 @@ describe('EndSessionValidatorのテスト', () => {
     const result = await new EndSessionSaver(
       new EndSessionRepository(tableName),
       sessionParam,
+      userId,
     ).save()
 
     expect(result.getStatusCode()).toBe(500)
@@ -92,6 +95,7 @@ describe('EndSessionValidatorのテスト', () => {
     const result = await new EndSessionSaver(
       new EndSessionRepository(tableName),
       sessionParam,
+      userId,
     ).save()
 
     expect(result.getStatusCode()).toBe(500)
@@ -120,6 +124,7 @@ describe('EndSessionValidatorのテスト', () => {
     const result = await new EndSessionSaver(
       new EndSessionRepository(tableName),
       sessionParam,
+      userId,
     ).save()
 
     expect(result.getStatusCode()).toBe(500)
@@ -148,6 +153,7 @@ describe('EndSessionValidatorのテスト', () => {
     const result = await new EndSessionSaver(
       new EndSessionRepository(tableName),
       sessionParam,
+      userId,
     ).save()
 
     expect(result.getStatusCode()).toBe(200)

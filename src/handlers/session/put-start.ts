@@ -32,12 +32,12 @@ export const putStartHandler = async (
   const sessionParam: SessionParam = ParamParser.from(event.body as string).parse()
 
   const authInfo = AuthUserInfo.from(event)
-  if (authInfo.isNotAuthenticated() || authInfo.getUserId() !== sessionParam.userId) {
+  if (authInfo.isNotAuthenticated()) {
     return Response.of401('Unauthorized').toApiResult()
   }
 
   const drivingSession: DrivingSession = {
-    userId: sessionParam.userId,
+    userId: authInfo.getUserId(),
     dateNumber: DateNumber.of(sessionParam.date).get(),
     operationDate: sessionParam.date,
     finished: false,

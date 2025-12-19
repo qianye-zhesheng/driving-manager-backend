@@ -21,7 +21,6 @@ describe('ParamParserのテスト', () => {
 
   test('parseされた内容がSessionParamの型であること', () => {
     const SessionParam: SessionParam = ParamParser.from(eventPutStart.body).parse()
-    expect(SessionParam).toHaveProperty('userId', 'user123')
     expect(SessionParam).toHaveProperty('date', '2025-01-01')
     expect(SessionParam).toHaveProperty('odometer', 10000)
   })

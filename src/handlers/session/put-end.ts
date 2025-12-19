@@ -30,11 +30,15 @@ export const putEndHandler = async (
   const sessionParam: SessionParam = ParamParser.from(event.body as string).parse()
 
   const authInfo = AuthUserInfo.from(event)
-  if (authInfo.isNotAuthenticated() || authInfo.getUserId() !== sessionParam.userId) {
+  if (authInfo.isNotAuthenticated()) {
     return Response.of401('Unauthorized').toApiResult()
   }
 
-  const response: Response = await new EndSessionSaver(repository, sessionParam).save()
+  const response: Response = await new EndSessionSaver(
+    repository,
+    sessionParam,
+    authInfo.getUserId(),
+  ).save()
 
   console.info(
     `response from: ${event.path} statusCode: ${response.getStatusCode()} body: ${response.getBody()}`,

@@ -14,9 +14,9 @@ export class EndSessionSaver {
   private readonly operationDate: string
   private readonly endOdometer: number
 
-  public constructor(repository: EndSessionRepository, sessionParam: SessionParam) {
+  public constructor(repository: EndSessionRepository, sessionParam: SessionParam, userId: string) {
     this.repository = repository
-    this.userId = sessionParam.userId
+    this.userId = userId
     this.dateNumber = DateNumber.of(sessionParam.date).get()
     this.operationDate = sessionParam.date
     this.endOdometer = sessionParam.odometer
